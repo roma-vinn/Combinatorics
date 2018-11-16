@@ -7,3 +7,4 @@ email: roma.vinn@gmail.com
 
 if __name__ == '__main__':
     print('Hello world!')
+    print('AKFaslkl;dsa;')
