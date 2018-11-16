@@ -38,14 +38,16 @@ def cut_rod(price, n, cut_cost=0):
     return val[n], _cuts[-1][1:]
 
 
-def test():
+def test(cut_cost):
     # test
-    arr = [1, 5, 8, 9, 10, 17, 17, 20]
+    arr = [3, 5, 8, 9, 10, 17, 19, 20]
     size = len(arr)
-    revenue, cuts = cut_rod(arr, size)
-    print("Maximum Obtainable Value is", revenue)
-    print('Optimal split is', cuts)
+    revenue, cuts = cut_rod(arr, size, cut_cost)
+    print('Cut cost:', cut_cost)
+    print("Maximum Obtainable Value is:", revenue)
+    print('Optimal split is:', cuts)
 
 
 if __name__ == '__main__':
-    test()
+    for c in [0, 1, 2]:
+        test(c)
