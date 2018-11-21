@@ -53,6 +53,8 @@ def is_prime(n: int, k=8) -> bool:
 
 
 if __name__ == '__main__':
-    for num in range(1, 1000):
-        if is_prime(num):
-            print('Number {} is prime by Miller-Rabin test.'.format(num))
+    with open('output.txt', 'w') as file:
+
+        for num in range(1, 1000):
+            if is_prime(num):
+                print('Number {} is prime by Miller-Rabin test.'.format(num), file=file)
