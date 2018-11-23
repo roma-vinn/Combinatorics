@@ -35,7 +35,7 @@ def is_prime(n: int, k=8) -> bool:
         s += 1
     assert (2 ** s * d == n - 1)
 
-    def trial_composite(a):
+    def composite_test(a):
         if pow(a, d, n) == 1:
             return False
         for i in range(s):
@@ -46,7 +46,7 @@ def is_prime(n: int, k=8) -> bool:
     # number of trials
     for trial in range(k):
         ran = random.randrange(2, n)
-        if trial_composite(ran):
+        if composite_test(ran):
             return False
 
     return True
