@@ -6,27 +6,31 @@ email: roma.vinn@gmail.com
 """
 
 
-def lcs_rec(_x, _y, _i, _j):
+def lcs_rec(seq_1, seq_2):
+    indexes = set()
+    _i = len(seq_1) - 1
+    _j = len(seq_2) - 1
+    length = _lcs_rec(seq_1, seq_2, _i, _j, indexes)
+    sub_sequence = [x[i] for i in indexes]
+    return length, sub_sequence
+
+
+def _lcs_rec(seq_1, seq_2, _i, _j, _ind):
     if _i == 0 or _j == 0:
-        if _x[_i] == _y[_j]:
+        if seq_1[_i] == seq_2[_j]:
             return 1
         else:
             return 0
-    elif _x[_i] == _y[_j]:
-        return lcs_rec(_x, _y, _i-1, _j-1) + 1
+    elif seq_1[_i] == seq_2[_j]:
+        if _i not in _ind:
+            _ind.add(_i)
+        return _lcs_rec(seq_1, seq_2, _i-1, _j-1, _ind) + 1
     else:
-        return max(lcs_rec(_x, _y, _i-1, _j), lcs_rec(_x, _y, _i, _j-1))
+        return max(_lcs_rec(seq_1, seq_2, _i-1, _j, _ind), _lcs_rec(seq_1, seq_2, _i, _j-1, _ind))
 
 
 if __name__ == '__main__':
     x = [1, 2, 3, 0, 4, -3, 5]
     y = [3, 0, 4, -3, 3, 0]
-    c = []
-    for i in range(len(x)):
-        c.append([])
-        for j in range(len(y)):
-            c[i].append((lcs_rec(x, y, i, j), i, j, x[i], y[j]))
-    # for i in c:
-    #     print(i)
 
-    print(lcs_rec(x, y, len(x) - 1, len(y) - 1))
+    print(lcs_rec(x, y))

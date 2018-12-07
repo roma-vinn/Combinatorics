@@ -6,6 +6,7 @@ email: roma.vinn@gmail.com
 """
 
 import random
+from math import gcd
 
 
 def fermat_test(n: int, trial_count=8) -> bool:
@@ -20,6 +21,8 @@ def fermat_test(n: int, trial_count=8) -> bool:
     for i in range(trial_count):
         # get random number
         a = random.randrange(2, n - 1)
+        while gcd(a, n) != 1:
+            a = random.randrange(2, n - 1)
         # check Fermat theorem
         if pow(a, n-1, n) != 1:
             flag = False
@@ -30,6 +33,6 @@ def fermat_test(n: int, trial_count=8) -> bool:
 
 if __name__ == '__main__':
     with open('output.txt', 'w') as file:
-        for num in range(2, 1000):
+        for num in range(2, 580):
             if fermat_test(num):
-                print('Number {} is prime by Fermat test.'.format(num), file=file)
+                print('Number {} is prime by Fermat test.'.format(num, 1), file=file)
