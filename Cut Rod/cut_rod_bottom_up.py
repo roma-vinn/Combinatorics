@@ -45,9 +45,10 @@ def test(cut_cost):
     revenue, cuts = cut_rod(arr, size, cut_cost)
     print('Cut cost:', cut_cost)
     print("Maximum Obtainable Value is:", revenue)
-    print('Optimal split is:', cuts)
+    print('Optimal split is:', ' | '.join(map(str, cuts)))
 
 
 if __name__ == '__main__':
     for c in [0, 1, 2]:
         test(c)
+        print()
