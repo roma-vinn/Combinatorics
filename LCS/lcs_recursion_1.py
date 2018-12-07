@@ -10,8 +10,8 @@ from time import clock
 
 def lcs_numbers_recursion(arr: list):
     """
-    Основна функція пошуку найдовшої монотонно неспадної
-    підпослідовності заданої послідовності чисел.
+    Основна функція рекурсивного пошуку найдовшої монотонно
+    неспадної підпослідовності заданої послідовності чисел.
     :param arr: послідовність чисел
     :return: найбільша підпослідовність
     """
@@ -50,14 +50,69 @@ def _lcs_numbers_recursion(seq_x: list, seq_y: list, prev: float):
                    key=len)
 
 
-if __name__ == '__main__':
-    # Тест
-    # вже для n = 14 час складає 5.641206
+def lcs_numbers_dynamic(seq_1, seq_2):
+    """
+    Основна функція динамічного пошуку найдовшої монотонно
+    неспадної підпослідовності заданих послідовностей чисел.
+    :param seq_1: послідовність чисел
+    :param seq_2: послідовність чисел
+    :return: найбільша підпослідовність
+    """
+
+    lengths = [[0 for _ in range(len(seq_2)+1)] for _ in range(len(seq_1)+1)]
+
+    for i, x in enumerate(seq_1):
+        for j, y in enumerate(seq_2):
+            if x == y:
+                # рухаємось по діагоналі
+                lengths[i+1][j+1] = lengths[i][j] + 1
+            else:
+                # максимум із попередньо знайдених підпослідовностей
+                lengths[i+1][j+1] = max(lengths[i+1][j], lengths[i][j+1])
+
+    # відновлюємо підпослідовність за матрицею
+    result = []
+    x, y = len(seq_1), len(seq_2)
+    while x != 0 and y != 0:
+        if lengths[x][y] == lengths[x-1][y]:
+            x -= 1
+        elif lengths[x][y] == lengths[x][y-1]:
+            y -= 1
+        else:
+            assert seq_1[x-1] == seq_2[y-1]
+            result = [seq_1[x-1]] + result
+            x -= 1
+            y -= 1
+    return result
+
+
+def test_rec():
     for n in [5, 10]:
         sequence = list(np.random.randint(0, 100, n))
         print('Послідовність [n = {}]:'.format(n), *sequence)
         begin = clock()
-        print('Найбільша монотонна підпослідовність:',
+        print('Найбільша монотонна підпослідовність [rec]:',
               *lcs_numbers_recursion(sequence))
         print('Час рекурсивного алгоритму:', clock() - begin)
         print()
+
+
+def test_dyn():
+    for n in [500, 1500]:
+        sequence_1 = list(np.random.randint(0, 100, n))
+        sequence_2 = list(np.random.randint(0, 100, n))
+        print('Послідовність [n = {}]:'.format(n), *sequence_1)
+        print('Послідовність [n = {}]:'.format(n), *sequence_2)
+        begin = clock()
+        print('Найбільша підпослідовність [dyn]:',
+              *lcs_numbers_dynamic(sequence_1, sequence_2))
+        print('Час динамічного алгоритму:', clock() - begin)
+        print()
+
+
+if __name__ == '__main__':
+    # Тест
+    # recursive: вже для n = 14 час складає 5.641206
+    # dynamic: для n = 1500 час складає 1.529204
+    test_rec()
+    test_dyn()
