@@ -18,7 +18,7 @@ def cut_rod_recursive(p, n, price, splitting):
     # max_val = max(max_val, p[n-1])
     if max_val <= p[n-1]:
         max_val = p[n-1]
-        splitting[n] = [n]
+        splitting[n] = n
     # if sum(splitting[n]) != n:
     #     splitting[n].append(n - sum(splitting[n]))
     return max_val, splitting
@@ -29,15 +29,31 @@ def _cut_rod_recursive(p, n, price, splitting):
         return 0, splitting
     max_val = float('-inf')
     best_i = 0
-    best_splitting = splitting
+    # best_splitting = splitting
     for i in range(n - 1):
         _cost, _splitting = cut_rod_recursive(p, n - i - 1, price, splitting)
         if max_val < p[i] + _cost - price:
             max_val = p[i] + _cost - price
             best_i = i
-            best_splitting = _splitting
-    splitting[n] = best_splitting[n - best_i] + [best_i + 1]
+            # best_splitting = _splitting
+    splitting[n] = best_i + 1
     return max_val, splitting
+
+
+def build_cutting(splitting: list):
+    """
+    Функція побудови розбиття за заданим
+    списком вказівників на індекси розбиття
+    :param splitting: список індексів розбиття
+    :return: список довжин елементів розбиття
+    """
+    cut_list = []
+    pointer = len(splitting) - 1
+    while pointer != 0:
+        cut = splitting[pointer]
+        cut_list.append(cut)
+        pointer -= cut
+    return cut_list
 
 
 if __name__ == '__main__':
@@ -45,6 +61,8 @@ if __name__ == '__main__':
     size = len(arr)
     for cut_cost in range(3):
         revenue, cuts = cut_rod(arr, size, cut_cost)
+        cuts = build_cutting(cuts)
         print('Cut cost:', cut_cost)
         print("Maximum Obtainable Value is:", revenue)
-        print('Optimal split is:', ' | '.join(map(str, cuts[size])))
+        print('Optimal split is:', ' | '.join(map(str, cuts)))
+        print()
