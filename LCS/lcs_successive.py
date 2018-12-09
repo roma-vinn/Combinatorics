@@ -1,21 +1,21 @@
 """
-Created by Roman Polishchenko at 12/7/18
+Created by Roman Polishchenko at 11/23/18
 2 course, comp math
 Taras Shevchenko National University of Kyiv
 email: roma.vinn@gmail.com
 """
-import numpy as np
 from time import clock
 
 
-def lcs_numbers_recursion(arr: list):
+def lcs_numbers_recursion(seq_x: list, seq_y: list) -> list:
     """
     Основна функція рекурсивного пошуку найдовшої монотонно
     неспадної підпослідовності заданої послідовності чисел.
-    :param arr: послідовність чисел
+    :param seq_x:
+    :param seq_y:
     :return: найбільша підпослідовність
     """
-    return _lcs_numbers_recursion(arr, arr, float('-inf'))
+    return _lcs_numbers_recursion(seq_x, seq_y, float('-inf'))
 
 
 def _lcs_numbers_recursion(seq_x: list, seq_y: list, prev: float):
@@ -87,33 +87,42 @@ def lcs_numbers_dynamic(seq_1, seq_2):
     return result
 
 
-def test_rec():
-    for n in [5, 10]:
-        sequence = list(np.random.randint(0, 100, n))
-        print('Послідовність [n = {}]:'.format(n), *sequence)
-        begin = clock()
-        print('Найбільша монотонна підпослідовність [rec]:',
-              *lcs_numbers_recursion(sequence))
-        print('Час рекурсивного алгоритму:', clock() - begin)
-        print()
+def get_successive(seq_x: list, seq_y: list, subseq: list) -> list:
+    seq_x = ' ' + ' '.join(map(str, seq_x))
+    seq_y = ' ' + ' '.join(map(str, seq_y))
+    max_subseq = ''
+    tmp = ''
+    for elem in subseq:
+        if tmp + ' ' + str(elem) in seq_x and tmp + ' ' + str(elem) in seq_y:
+            tmp += ' ' + str(elem)
+        else:
+            max_subseq = max(max_subseq, tmp, key=len)
+            tmp = ' ' + str(elem)
+    max_subseq = max(max_subseq, tmp, key=len)
+    return list(map(int, max_subseq.split()))
 
 
-def test_dyn():
-    for n in [500, 1500]:
-        sequence_1 = list(np.random.randint(0, 100, n))
-        sequence_2 = list(np.random.randint(0, 100, n))
-        print('Послідовність [n = {}]:'.format(n), *sequence_1)
-        print('Послідовність [n = {}]:'.format(n), *sequence_2)
-        begin = clock()
-        print('Найбільша підпослідовність [dyn]:',
-              *lcs_numbers_dynamic(sequence_1, sequence_2))
-        print('Час динамічного алгоритму:', clock() - begin)
-        print()
+def test():
+    sequence1 = [1, 2, 3, 4, 5]
+    sequence2 = [1, 2, 0, 3, 4, 5]
+
+    print('Послідовність 1:', *sequence1)
+    print('Послідовність 2:', *sequence2)
+
+    begin = clock()
+    result = get_successive(sequence1, sequence2, lcs_numbers_recursion(sequence1, sequence2))
+    print('Найбільша підпослідовність чисел ідучих підряд [rec]:',
+          *result)
+    print('Час рекурсивного алгоритму:', clock() - begin)
+    print()
+    begin = clock()
+    result = get_successive(sequence1, sequence2, lcs_numbers_dynamic(sequence1, sequence2))
+    print('Найбільша підпослідовність чисел ідучих підряд [rec]:',
+          *result)
+    print('Час рекурсивного алгоритму:', clock() - begin)
+    print()
 
 
 if __name__ == '__main__':
-    # Тест
-    # recursive: вже для n = 14 час складає 5.641206
-    # dynamic: для n = 1500 час складає 1.529204
-    test_rec()
-    test_dyn()
+    test()
+    pass
